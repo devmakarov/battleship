@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  username     String
+  email        String   @unique
+  passwordHash String
+  status       Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // These are the reverse relation fields
+  gamesAsPlayer1 Game[] @relation("Player1Games")
+  gamesAsPlayer2 Game[] @relation("Player2Games")
+}
+
+model Game {
+  id          Int      @id @default(autoincrement())
+  player1     User     @relation("Player1Games", fields: [player1Id], references: [id])
+  player1Id   Int
+  player2     User     @relation("Player2Games", fields: [player2Id], references: [id])
+  player2Id   Int
+  boardState  String
+  currentTurn Int
+  status      Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
