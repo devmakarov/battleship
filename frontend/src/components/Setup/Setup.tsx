@@ -10,7 +10,7 @@ import Ship from "../Ship/Ship.tsx";
 import { EInTheQueue } from "../Game/types.ts";
 
 const Setup = ({ onReady, state: parentState, ships }: PositionSetupProps) => {
-  const { state, setState, roots } = useBoardState();
+  const { state, setState, roots } = useBoardState(); // todo: get rid of that state
 
   const isCompleted = useMemo(() => {
     return Object.values(roots).length === SHIPS_COUNT;

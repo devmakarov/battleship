@@ -10,51 +10,36 @@ import Action from "../Action/Action.tsx";
 import Button from "../Button/Button.tsx";
 
 import { useGameState } from "./hooks/useGameState.ts";
-import { useGameSocket } from "./hooks/useGameSocket.ts";
+import { useGameSocketEvents } from "./hooks/useGameSocketEvents.ts";
 import { useGameAPI } from "./hooks/useGameAPI.ts";
-import { useEffect } from "react";
 import { EInTheQueue } from "./types.ts";
 
 const Game = () => {
   const game = useGameState();
-  const { socket, isModalOpen, modalType, setIsModalOpen, setModalType } =
-    useGameSocket(game);
+  const { socket } = useGameSocketEvents(game);
 
-  const { handleCreateGame, handleJoinGame, handleJoinRandomGame, handleResetGame, isFriendGame } = useGameAPI({
+  const {
+    handleCreateGame,
+    handleJoinGame,
+    handleJoinRandomGame,
+    handleResetGame,
+  } = useGameAPI({
     socket,
-    game
-  })
+    game,
+  });
 
   const finishGame = async () => {
-    game.setIsPlaying(false);
-    game.setIsStarted(false);
-    game.setTurn(false);
-    game.setOpponentRoots({});
-    game.myself.setState(game.savedState);
-    game.opponent.reset();
-    game.setHasPlayed(true);
+    game.finish();
 
-    if (isFriendGame) {
+    if (game.isFriendGame) {
       await handleResetGame();
     }
   };
 
-  const handleModalClose = () => {
-    setModalType(undefined);
-    setIsModalOpen(false);
-    finishGame();
+  const handleModalClose = async () => {
+    game.closeModal();
+    await finishGame();
   };
-
-  const onReady = (state: number[][]) => {
-    game.myself.setState(state);
-    game.setView(EAppViews.Game);
-  };
-
-  useEffect(() => {
-    if (game.isStarted && game.playerId && socket) {
-      socket.emit("register", { playerId: game.playerId });
-    }
-  }, [game.isStarted, game.playerId, socket]);
 
   return (
     <main className={appStyles.container}>
@@ -86,7 +71,7 @@ const Game = () => {
               <Setup
                 ships={game.ships}
                 state={game.myself.state}
-                onReady={onReady}
+                onReady={game.onReady}
               />
             ) : (
               <div className={styles.playerBox}>
@@ -99,7 +84,6 @@ const Game = () => {
                     isPlaying={game.isPlaying}
                     isInTheQueue={game.isInTheQueue}
                     turn={game.turn}
-
                     changeTurn={game.changeTurn}
                     inActive={!game.isPlaying}
                     gameId={game.gameId}
@@ -109,14 +93,14 @@ const Game = () => {
                   {!game.isPlaying && (
                     <div className={styles.boardOverflow}>
                       <div className={styles.boardPreview}>
-                        {!isFriendGame ? (
+                        {!game.isFriendGame ? (
                           <div className={styles.boardChooseTheOpponent}>
                             Choose the mode
                           </div>
                         ) : null}
 
                         <div className={styles.playModes}>
-                          {!isFriendGame && (
+                          {!game.isFriendGame && (
                             <>
                               <Button
                                 size="medium"
@@ -143,7 +127,7 @@ const Game = () => {
                             </>
                           )}
 
-                          {isFriendGame && (
+                          {game.isFriendGame && (
                             <Button
                               variant="green"
                               size="medium"
@@ -191,10 +175,10 @@ const Game = () => {
           </div>
         </div>
 
-        {modalType && (
+        {game.modalType && (
           <Modal
-            type={modalType}
-            isOpen={isModalOpen}
+            type={game.modalType}
+            isOpen={game.isModalOpen}
             onClose={handleModalClose}
           />
         )}

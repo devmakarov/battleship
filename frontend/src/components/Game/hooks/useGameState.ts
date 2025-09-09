@@ -8,6 +8,7 @@ import {
 import type { ShipInfo } from "../../Setup/types.ts";
 import { generateBattleshipGrid, getDefaultPosition } from "../utils.ts";
 import { EInTheQueue } from "../types.ts";
+import { EModalType } from "../../Modal/enums.ts";
 
 export interface UseGameStateReturn {
   view: EAppViews;
@@ -51,6 +52,18 @@ export interface UseGameStateReturn {
   setIsStarted: Dispatch<SetStateAction<boolean>>;
 
   changeTurn: () => void;
+  isModalOpen: boolean;
+  setIsModalOpen: Dispatch<SetStateAction<boolean>>;
+
+  modalType?: EModalType;
+  setModalType: Dispatch<SetStateAction<EModalType | undefined>>;
+
+  onReady: (state: number[][]) => void;
+  finish: () => void;
+  closeModal: () => void;
+
+  isFriendGame: boolean;
+  setIsFriendGame: Dispatch<SetStateAction<boolean>>;
 }
 
 export function useGameState(): UseGameStateReturn {
@@ -64,6 +77,9 @@ export function useGameState(): UseGameStateReturn {
   const [playerId, setPlayerId] = useState("");
   const [gameId, setGameId] = useState("");
   const [hasPlayed, setHasPlayed] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<EModalType>();
+  const [isFriendGame, setIsFriendGame] = useState<boolean>(false);
   const [opponentRoots, setOpponentRoots] = useState<Record<Cell, ShipInfo>>(
     {},
   );
@@ -95,6 +111,26 @@ export function useGameState(): UseGameStateReturn {
 
   const changeTurn = () => setTurn(false);
 
+  const onReady = (state: number[][]) => {
+    myself.setState(state);
+    setView(EAppViews.Game);
+  };
+
+  const finish = () => {
+    setIsPlaying(false);
+    setIsStarted(false);
+    setTurn(false);
+    setOpponentRoots({});
+    myself.setState(savedState);
+    opponent.reset();
+    setHasPlayed(true);
+  };
+
+  const closeModal = () => {
+    setModalType(undefined);
+    setIsModalOpen(false);
+  };
+
   return {
     view,
     setView,
@@ -123,6 +159,15 @@ export function useGameState(): UseGameStateReturn {
     setHasPlayed,
     isStarted,
     setIsStarted,
-    changeTurn
+    changeTurn,
+    isModalOpen,
+    setIsModalOpen,
+    modalType,
+    setModalType,
+    onReady,
+    finish,
+    closeModal,
+    isFriendGame,
+    setIsFriendGame,
   };
 }

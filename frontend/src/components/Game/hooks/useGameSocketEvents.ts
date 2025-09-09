@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import useAudio, { EAudio } from "../../../hooks/useAudio";
 import { useSocket } from "../../../hooks/useSocket/useSocket.ts";
 import { EModalType } from "../../Modal/enums.ts";
@@ -6,7 +6,8 @@ import { ECellValue } from "../../Board/enums.ts";
 import { EInTheQueue } from "../types.ts";
 import type { UseGameStateReturn } from "./useGameState.ts";
 
-export function useGameSocket({
+export function useGameSocketEvents({
+  isStarted,
   playerId,
   myself,
   opponent,
@@ -16,6 +17,9 @@ export function useGameSocket({
   setIsPlaying,
   setIsInTheQueue,
   setHasPlayed,
+  setModalType,
+  setIsModalOpen,
+  setIsFriendGame,
 }: UseGameStateReturn) {
   const {
     socket,
@@ -25,9 +29,6 @@ export function useGameSocket({
     setOnOpponentLeft,
   } = useSocket();
   const { playAudio } = useAudio();
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<EModalType>();
 
   useEffect(() => {
     if (!playerId) {
@@ -79,16 +80,19 @@ export function useGameSocket({
       setGameId("");
       setIsModalOpen(true);
       setHasPlayed(false);
+      setIsFriendGame(false);
       setIsInTheQueue(EInTheQueue.Unset);
       setModalType(EModalType.GameIsTerminated);
     });
   }, [playerId, myself, opponent]);
 
+  useEffect(() => {
+    if (isStarted && playerId && socket) {
+      socket.emit("register", { playerId });
+    }
+  }, [isStarted, playerId, socket]);
+
   return {
     socket,
-    isModalOpen,
-    modalType,
-    setIsModalOpen,
-    setModalType,
   };
 }
