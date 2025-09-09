@@ -14,10 +14,8 @@ export const useCellSize = (
       setCellSize(rect.width / cols);
     };
 
-    // initial size
     updateSize();
 
-    // observe size changes
     const resizeObserver = new ResizeObserver(updateSize);
     resizeObserver.observe(boardRef.current);
 

@@ -1,26 +1,10 @@
-import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import useAudio, { EAudio } from "../../../hooks/useAudio";
 import { useSocket } from "../../../hooks/useSocket/useSocket.ts";
 import { EModalType } from "../../Modal/enums.ts";
 import { ECellValue } from "../../Board/enums.ts";
-import type {
-  Cell,
-  UseBoardStateReturn,
-} from "../../Board/hooks/useBoardState.ts";
-import type { ShipInfo } from "../../Setup/types.ts";
 import { EInTheQueue } from "../types.ts";
-
-interface UseGameSocketParams {
-  playerId: string;
-  myself: UseBoardStateReturn;
-  opponent: UseBoardStateReturn;
-  setTurn: Dispatch<SetStateAction<boolean>>;
-  setOpponentRoots: Dispatch<SetStateAction<Record<Cell, ShipInfo>>>;
-  setGameId: Dispatch<SetStateAction<string>>;
-  setIsPlaying: Dispatch<SetStateAction<boolean>>;
-  setIsInTheQueue: Dispatch<SetStateAction<EInTheQueue>>;
-  setHasPlayed: Dispatch<SetStateAction<boolean>>;
-}
+import type { UseGameStateReturn } from "./useGameState.ts";
 
 export function useGameSocket({
   playerId,
@@ -32,7 +16,7 @@ export function useGameSocket({
   setIsPlaying,
   setIsInTheQueue,
   setHasPlayed,
-}: UseGameSocketParams) {
+}: UseGameStateReturn) {
   const {
     socket,
     setOnInitialize,
@@ -54,8 +38,6 @@ export function useGameSocket({
       if (!data) {
         return;
       }
-      console.log("setOnInitialize", playerId);
-      console.log("data", data);
 
       setGameId(data.gameId);
       setIsPlaying(true);

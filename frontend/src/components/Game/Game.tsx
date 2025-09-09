@@ -1,6 +1,3 @@
-import axios from "axios";
-import { useLocation } from "react-router-dom";
-
 import { Board } from "../Board/Board.tsx";
 import * as styles from "./Game.css.ts";
 import * as appStyles from "../../app.css.ts";
@@ -14,6 +11,7 @@ import Button from "../Button/Button.tsx";
 
 import { useGameState } from "./hooks/useGameState.ts";
 import { useGameSocket } from "./hooks/useGameSocket.ts";
+import { useGameAPI } from "./hooks/useGameAPI.ts";
 import { useEffect } from "react";
 import { EInTheQueue } from "./types.ts";
 
@@ -22,81 +20,10 @@ const Game = () => {
   const { socket, isModalOpen, modalType, setIsModalOpen, setModalType } =
     useGameSocket(game);
 
-  const location = useLocation();
-  const gameIdFromUrl = location.pathname.split("/game/")[1];
-  const joinParam = new URLSearchParams(location.search).get("join");
-
-  const isFriendGame = !!game.gameId || (!!gameIdFromUrl && joinParam);
-
-  const handleCreateGame = async () => {
-    game.setSavedState(() => game.myself.state.map((row) => [...row]));
-    game.setIsInTheQueue(EInTheQueue.WithFriend);
-
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_URI}/api/game/create-game`,
-      {
-        board: game.myself.state,
-        playerName: "guest",
-      },
-    );
-
-    const { gameId } = response.data;
-    game.setGameId(gameId);
-    game.setIsInTheQueue(EInTheQueue.Unset);
-
-    const link = `${window.location.origin}/game/${gameId}?join=true`;
-    alert(`Share this link with your friend: ${link}`);
-  };
-
-  const handleJoinRandomGame = async () => {
-    game.setSavedState(() => game.myself.state.map((row) => [...row]));
-    game.setIsInTheQueue(EInTheQueue.Random);
-
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_URI}/api/game/join`,
-      {
-        board: game.myself.state,
-        playerName: "guest",
-      },
-    );
-
-    const { playerId, gameId } = response.data;
-
-    game.setPlayerId(playerId);
-    game.setGameId(gameId);
-    game.setIsStarted(true);
-
-    socket?.emit("register", { playerId: game.playerId });
-  };
-
-  const handleJoinGame = async () => {
-    game.setSavedState(() => game.myself.state.map((row) => [...row]));
-    game.setIsInTheQueue(EInTheQueue.WithFriend);
-
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_URI}/api/game/join-game`,
-      {
-        board: game.myself.state,
-        playerName: "guest",
-        gameId: game.gameId || gameIdFromUrl,
-        playerId: game.playerId,
-      },
-    );
-
-    const { playerId, gameId } = response.data;
-
-    game.setPlayerId(playerId);
-    game.setGameId(gameId);
-    game.setIsStarted(true);
-  };
-
-  const handleResetGame = async () => {
-    await axios.post(`${import.meta.env.VITE_API_URI}/api/game/reset-game`, {
-      gameId: game.gameId || gameIdFromUrl,
-    });
-  };
-
-  const changeTurn = () => game.setTurn(false);
+  const { handleCreateGame, handleJoinGame, handleJoinRandomGame, handleResetGame, isFriendGame } = useGameAPI({
+    socket,
+    game
+  })
 
   const finishGame = async () => {
     game.setIsPlaying(false);
@@ -126,11 +53,9 @@ const Game = () => {
   useEffect(() => {
     if (game.isStarted && game.playerId && socket) {
       socket.emit("register", { playerId: game.playerId });
-      console.log("Registered player after game started:", game.playerId);
     }
   }, [game.isStarted, game.playerId, socket]);
 
-  console.log(game.isInTheQueue);
   return (
     <main className={appStyles.container}>
       <div className={styles.app}>
@@ -173,8 +98,9 @@ const Game = () => {
                     mode={Mode.Opponent}
                     isPlaying={game.isPlaying}
                     isInTheQueue={game.isInTheQueue}
-                    changeTurn={changeTurn}
                     turn={game.turn}
+
+                    changeTurn={game.changeTurn}
                     inActive={!game.isPlaying}
                     gameId={game.gameId}
                     playerId={game.playerId}
@@ -252,6 +178,7 @@ const Game = () => {
               }
               onClick={game.generateRandomPosition}
             />
+
             <Action
               text="Reset position"
               isDisabled={

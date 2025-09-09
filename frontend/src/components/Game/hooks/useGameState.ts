@@ -1,11 +1,59 @@
-import { useMemo, useState } from "react";
+import { type Dispatch, type SetStateAction, useMemo, useState } from "react";
 import { EAppViews } from "../../../enums.ts";
-import { type Cell, useBoardState } from "../../Board/hooks/useBoardState.ts";
+import {
+  type Cell,
+  useBoardState,
+  type UseBoardStateReturn,
+} from "../../Board/hooks/useBoardState.ts";
 import type { ShipInfo } from "../../Setup/types.ts";
 import { generateBattleshipGrid, getDefaultPosition } from "../utils.ts";
 import { EInTheQueue } from "../types.ts";
 
-export function useGameState() {
+export interface UseGameStateReturn {
+  view: EAppViews;
+  setView: Dispatch<SetStateAction<EAppViews>>;
+
+  isPlaying: boolean;
+  setIsPlaying: Dispatch<SetStateAction<boolean>>;
+
+  isInTheQueue: EInTheQueue;
+  setIsInTheQueue: Dispatch<SetStateAction<EInTheQueue>>;
+
+  ships: Set<string>;
+  setShips: Dispatch<SetStateAction<Set<string>>>;
+
+  turn: boolean;
+  setTurn: Dispatch<SetStateAction<boolean>>;
+
+  savedState: number[][];
+  setSavedState: Dispatch<SetStateAction<number[][]>>;
+
+  playerId: string;
+  setPlayerId: Dispatch<SetStateAction<string>>;
+
+  gameId: string;
+  setGameId: Dispatch<SetStateAction<string>>;
+
+  opponentRoots: Record<Cell, ShipInfo>;
+  setOpponentRoots: Dispatch<SetStateAction<Record<Cell, ShipInfo>>>;
+
+  myself: UseBoardStateReturn;
+  opponent: UseBoardStateReturn;
+
+  isRandomizeDisabled: boolean;
+  generateRandomPosition: () => void;
+  resetPosition: () => void;
+
+  hasPlayed: boolean;
+  setHasPlayed: Dispatch<SetStateAction<boolean>>;
+
+  isStarted: boolean;
+  setIsStarted: Dispatch<SetStateAction<boolean>>;
+
+  changeTurn: () => void;
+}
+
+export function useGameState(): UseGameStateReturn {
   const [view, setView] = useState(EAppViews.Setup);
   const [isStarted, setIsStarted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -45,6 +93,8 @@ export function useGameState() {
     setHasGeneratedRandomPosition(false);
   };
 
+  const changeTurn = () => setTurn(false);
+
   return {
     view,
     setView,
@@ -73,5 +123,6 @@ export function useGameState() {
     setHasPlayed,
     isStarted,
     setIsStarted,
+    changeTurn
   };
 }

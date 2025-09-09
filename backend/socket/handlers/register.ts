@@ -11,11 +11,9 @@ export default async function handleRegister(
         const { playerId } = payload || {};
         if (!playerId) return;
 
-        // Register socket in Redis
         await redis.set(`player:${playerId}:socket`, socket.id);
         await redis.set(`socket:${socket.id}:player`, playerId);
 
-        // Check if player belongs to a game
         const gameId = await redis.get(`player:${playerId}:game`);
         if (!gameId) return;
 
@@ -24,10 +22,8 @@ export default async function handleRegister(
 
         const game: Game = JSON.parse(gameRaw);
 
-        // Only emit if there are 2 players
         if (game.players.length < 2) return;
 
-        // Emit game.initialize to all registered players
         for (const p of game.players) {
             const socketId = await redis.get(`player:${p}:socket`);
             if (socketId && io.sockets.sockets.has(socketId)) {
