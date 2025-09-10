@@ -2,6 +2,7 @@ import Redis from "ioredis";
 
 const isProduction = process.env.NODE_ENV === "production";
 
+console.log('process.env', process.env)
 const redisUrl = isProduction
     ? process.env.REDIS_URL!
     : process.env.REDIS_URL || "redis://127.0.0.1:6379";
