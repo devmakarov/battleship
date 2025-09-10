@@ -7,7 +7,7 @@ const redis = new Redis({
         ? process.env.REDISHOST!
         : process.env.REDISHOST || "redis",
     port: Number(process.env.REDISPORT) || 6379,
-    password: process.env.REDIS_PASSWORD || undefined,
+    password: process.env.REDISPASSWORD || undefined,
     tls: isProduction ? {} : undefined,
 });
 
