@@ -4,9 +4,9 @@ const isProduction = process.env.NODE_ENV === "production";
 
 const redis = new Redis({
     host: isProduction
-        ? process.env.REDIS_HOST!
-        : process.env.REDIS_HOST || "redis",
-    port: Number(process.env.REDIS_PORT) || 6379,
+        ? process.env.REDISHOST!
+        : process.env.REDISHOST || "redis",
+    port: Number(process.env.REDISPORT) || 6379,
     password: process.env.REDIS_PASSWORD || undefined,
     tls: isProduction ? {} : undefined,
 });
