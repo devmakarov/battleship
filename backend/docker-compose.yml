@@ -26,8 +26,7 @@ services:
       npm run dev"
     environment:
       DATABASE_URL: postgresql://myuser:mypassword@db:5432/myappdb
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      REDIS_PUBLIC_URL: redis://redis:6379
     ports:
       - "3000:3000"
     depends_on:
