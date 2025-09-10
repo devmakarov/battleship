@@ -2,12 +2,12 @@ import Redis from "ioredis";
 
 const isProduction = process.env.NODE_ENV === "production";
 
-console.log('process.env', process.env)
+console.log('isProduction', isProduction)
 const redisUrl = isProduction
     ? process.env.REDIS_URL!
     : process.env.REDIS_URL || "redis://127.0.0.1:6379";
 
-const redis = new Redis(redisUrl, { tls: {} });
+const redis = new Redis(redisUrl, {  });
 
 redis.on("error", (err) => {
     console.error("Redis error:", err);
