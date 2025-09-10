@@ -201,8 +201,7 @@ export const Board = ({
                     />
                   )}
 
-                  {mode === Mode.Opponent &&
-                  state[rowIndex][colIndex] === ECellValue.Shot ? (
+                  {state[rowIndex][colIndex] === ECellValue.Shot ? (
                     <div className={styles.cellShot}>
                       <ShipBlockShot />
                     </div>

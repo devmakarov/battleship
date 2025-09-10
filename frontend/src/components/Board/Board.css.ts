@@ -25,7 +25,6 @@ export const cellHover = style({
   position: "absolute",
   inset: "-1px",
   zIndex: 1,
-  transition: "all .25s ease-in-out",
   border: `2px solid transparent`,
 
   ":hover": {
