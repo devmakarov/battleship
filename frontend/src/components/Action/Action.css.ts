@@ -23,12 +23,18 @@ export const actionButton = style({
   textTransform: "uppercase",
   cursor: "pointer",
   transition: ".3s background ease-in-out",
-  textAlign: "left",
+  textAlign: "center",
 
   selectors: {
     "&:disabled": {
       cursor: "not-allowed",
       opacity: 0.6,
+    },
+  },
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      fontSize: "11px",
     },
   },
 });

@@ -32,6 +32,15 @@ export const cellHover = style({
     cursor: "pointer",
     border: `2px solid ${vars.color.cellHover}`,
   },
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      ":hover": {
+        cursor: "pointer",
+        border: `2px solid transparent`,
+      },
+    },
+  },
 });
 
 export const boardBody = style({
@@ -76,6 +85,11 @@ export const title = style({
 });
 
 export const missedBox = style({
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
   width: "100%",
   height: "100%",
   display: "flex",
@@ -85,6 +99,11 @@ export const missedBox = style({
 });
 
 export const pointlessToShotBox = style({
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
   width: "100%",
   height: "100%",
   display: "flex",
@@ -101,11 +120,13 @@ export const missedShot = style({
 });
 
 export const cellShot = style({
-  width: "100%",
-  height: "100%",
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
   backgroundColor: vars.color.shot,
-  position: "relative",
 });

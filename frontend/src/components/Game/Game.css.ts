@@ -26,7 +26,7 @@ export const view = style({
   "@media": {
     "screen and (max-width: 768px)": {
       marginTop: "60px",
-      paddingTop: "16px",
+      padding: "16px 0",
       order: 2,
       display: "flex",
       flexDirection: "column",
@@ -56,6 +56,13 @@ export const gameActions = style({
   display: "flex",
   gap: "30px",
   padding: "0 36px",
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      padding: "0 8px",
+      gap: "16px",
+    },
+  },
 });
 
 export const playerBox = style({

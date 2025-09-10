@@ -1,5 +1,4 @@
 import * as styles from "./ShipBlock.css.ts";
-import ShipBlockShot from "./ShipBlockShot.tsx";
 import { ECellValue } from "../Board/enums.ts";
 
 const ShipBlock = ({
@@ -27,11 +26,7 @@ const ShipBlock = ({
     ${isShot ? "shot" : mode === "opponent" ? "" : "live"}
   `;
 
-  return (
-    <div key={index} className={blockClass}>
-      {isShot && <ShipBlockShot />}
-    </div>
-  );
+  return <div key={index} className={blockClass}></div>;
 };
 
 export default ShipBlock;

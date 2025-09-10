@@ -15,7 +15,7 @@ export const container = style({
 
   "@media": {
     "screen and (max-width: 768px)": {
-      padding: "0 4px",
+      padding: "0 8px",
     },
   },
 });
