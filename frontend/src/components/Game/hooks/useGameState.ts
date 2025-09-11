@@ -107,6 +107,7 @@ export function useGameState(): UseGameStateReturn {
     myself.setState(getDefaultPosition());
     setView(EAppViews.Setup);
     setHasGeneratedRandomPosition(false);
+    setShips(new Set<string>());
   };
 
   const changeTurn = () => setTurn(false);
