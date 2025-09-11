@@ -15,10 +15,6 @@ export const shipBlock = style({
       backgroundColor: vars.color.shipBackgroundColor,
     },
 
-    "&.shot": {
-      backgroundColor: vars.color.darkRed,
-    },
-
     "&.dragging": {
       backgroundColor: vars.color.shipDraggingBackgroundColor,
     },

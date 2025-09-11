@@ -19,6 +19,9 @@ export const cell = style({
   borderBottom: `1px solid ${vars.color.secondary}`,
   position: "relative",
   boxSizing: "border-box",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
 });
 
 export const cellHover = style({
@@ -84,30 +87,10 @@ export const title = style({
 });
 
 export const missedBox = style({
-  position: "absolute",
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  width: "100%",
-  height: "100%",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
   backgroundColor: vars.color.missed,
 });
 
-export const pointlessToShotBox = style({
-  position: "absolute",
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  width: "100%",
-  height: "100%",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
+export const pointlessToShot = style({
   backgroundColor: vars.color.pointlessToShot,
 });
 
@@ -118,14 +101,10 @@ export const missedShot = style({
   backgroundColor: vars.color.gray,
 });
 
+export const prevShot = style({
+  backgroundColor: vars.color.prevShot,
+});
+
 export const cellShot = style({
-  position: "absolute",
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
   backgroundColor: vars.color.shot,
 });

@@ -22,5 +22,6 @@ export const vars = createGlobalTheme(":root", {
     missed: "#b1adad42",
     shot: "#ffa9a4",
     pointlessToShot: "#96a1a612",
+    prevShot: "#ffe6a2",
   },
 });

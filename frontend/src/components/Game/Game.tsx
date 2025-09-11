@@ -63,6 +63,7 @@ const Game = () => {
                   turn={game.turn}
                   ships={game.ships}
                   setShips={game.setShips}
+                  prevMove={game.myself.prevMove}
                 />
               </div>
               <p className={styles.playerBoxTitle}>Your grid</p>
@@ -89,6 +90,7 @@ const Game = () => {
                     inActive={!game.isPlaying}
                     gameId={game.gameId}
                     playerId={game.playerId}
+                    prevMove={game.opponent.prevMove}
                   />
 
                   {!game.isPlaying && (

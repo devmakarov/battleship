@@ -123,7 +123,9 @@ export function useGameState(): UseGameStateReturn {
     setTurn(false);
     setOpponentRoots({});
     myself.setState(savedState);
+    myself.resetPrevMove();
     opponent.reset();
+    opponent.resetPrevMove();
     setHasPlayed(true);
   };
 

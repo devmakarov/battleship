@@ -5,12 +5,20 @@ import { ECellValue } from "../enums.ts";
 
 export type Cell = string;
 
+export interface BoardPrevMove {
+  row: number;
+  col: number;
+}
+
 export interface UseBoardStateReturn {
   state: number[][];
   setState: React.Dispatch<React.SetStateAction<number[][]>>;
   roots: Record<Cell, ShipInfo>;
   setRoots: React.Dispatch<React.SetStateAction<Record<Cell, ShipInfo>>>;
   reset: () => void;
+  prevMove: BoardPrevMove;
+  setPrevMove: React.Dispatch<React.SetStateAction<BoardPrevMove>>;
+  resetPrevMove: () => void;
 }
 
 function makeCell(r: number, c: number): Cell {
@@ -30,6 +38,8 @@ interface useBoardStateParams {
   defaultRoots?: Record<Cell, ShipInfo>;
 }
 
+export const defaultPrevMove: BoardPrevMove = { row: -1, col: -1 };
+
 export const useBoardState = (
   { grid, defaultRoots }: useBoardStateParams = {
     grid: getDefaultGrid(),
@@ -38,6 +48,7 @@ export const useBoardState = (
   const [state, setState] = useState(grid);
   const [, setParent] = useState<Record<Cell, Cell>>({});
   const [roots, setRoots] = useState<Record<Cell, ShipInfo>>({});
+  const [prevMove, setPrevMove] = useState(defaultPrevMove);
 
   function find(x: Cell, parentMap: Record<Cell, Cell>): Cell {
     let p = parentMap[x] ?? x;
@@ -59,6 +70,10 @@ export const useBoardState = (
   const reset = () => {
     setRoots({});
     setState(getDefaultGrid());
+  };
+
+  const resetPrevMove = () => {
+    setPrevMove(defaultPrevMove);
   };
 
   useEffect(() => {
@@ -151,5 +166,14 @@ export const useBoardState = (
     setParent(newParent);
   }, [state, defaultRoots]);
 
-  return { state, setState, roots, setRoots, reset };
+  return {
+    state,
+    setState,
+    roots,
+    setRoots,
+    reset,
+    prevMove,
+    setPrevMove,
+    resetPrevMove,
+  };
 };

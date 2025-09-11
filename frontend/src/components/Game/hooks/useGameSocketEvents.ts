@@ -63,6 +63,8 @@ export function useGameSocketEvents({
       });
 
       player.setState(copy);
+      player.setPrevMove({ row: data.move.row, col: data.move.col });
+
       setTurn(playerId === data.turn);
 
       if (data.prevTurn === playerId) {

@@ -9,8 +9,19 @@ import ShipBlockShot from "../Ship/ShipBlockShot.tsx";
 import { useCellSize } from "./hooks/useCellSize.ts";
 import type { ShipDataTransfer } from "../Ship/types.ts";
 import { EInTheQueue } from "../Game/types.ts";
+import { defaultPrevMove } from "./hooks/useBoardState.ts";
 
 const CAPITALIZE_LETTER_A_INDEX = 65;
+
+function getCellClassName(cellValue: ECellValue) {
+  const map: Partial<Record<ECellValue, string>> = {
+    [ECellValue.Shot]: styles.cellShot,
+    [ECellValue.Miss]: styles.missedBox,
+    [ECellValue.Pointless]: styles.pointlessToShot,
+  };
+
+  return map[cellValue];
+}
 
 export const Board = ({
   state,
@@ -25,6 +36,7 @@ export const Board = ({
   turn,
   gameId = "",
   playerId = "",
+  prevMove = defaultPrevMove,
 }: BoardProps) => {
   const boardRef = useRef<HTMLDivElement>(null);
   const size = useCellSize(boardRef, 10);
@@ -142,6 +154,10 @@ export const Board = ({
     return obj[key];
   }
 
+  function isPrevMove(row: number, col: number) {
+    return prevMove.row === row && prevMove.col === col;
+  }
+
   return (
     <div
       className={`
@@ -178,7 +194,7 @@ export const Board = ({
               {row.map((_, colIndex) => (
                 <div
                   key={colIndex}
-                  className={styles.cell}
+                  className={`${styles.cell} ${getCellClassName(state[rowIndex][colIndex])} ${isPrevMove(rowIndex, colIndex) ? styles.prevShot : ""}`}
                   onDragOver={onDragOver}
                   onDrop={onDrop}
                   data-row={rowIndex}
@@ -202,21 +218,12 @@ export const Board = ({
                   )}
 
                   {state[rowIndex][colIndex] === ECellValue.Shot ? (
-                    <div className={styles.cellShot}>
-                      <ShipBlockShot />
-                    </div>
+                    <ShipBlockShot />
                   ) : null}
 
-                  {state[rowIndex][colIndex] === ECellValue.Miss ? (
-                    <div className={styles.missedBox}>
-                      <div className={styles.missedShot}></div>
-                    </div>
-                  ) : null}
-
-                  {state[rowIndex][colIndex] === ECellValue.Pointless ? (
-                    <div className={styles.pointlessToShotBox}>
-                      <div className={styles.missedShot}></div>
-                    </div>
+                  {state[rowIndex][colIndex] === ECellValue.Miss ||
+                  state[rowIndex][colIndex] === ECellValue.Pointless ? (
+                    <div className={styles.missedShot}></div>
                   ) : null}
 
                   {state[rowIndex][colIndex] === ECellValue.Live ||

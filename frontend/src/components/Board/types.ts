@@ -1,6 +1,7 @@
 import type { ShipInfo } from "../Setup/types.ts";
 import { Mode } from "./enums.ts";
 import type { EInTheQueue } from "../Game/types.ts";
+import type { BoardPrevMove } from "./hooks/useBoardState.ts";
 
 export interface BoardProps {
   state: number[][];
@@ -16,4 +17,5 @@ export interface BoardProps {
   changeTurn?: () => void;
   gameId?: string;
   playerId?: string;
+  prevMove?: BoardPrevMove;
 }
