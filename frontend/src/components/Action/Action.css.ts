@@ -5,7 +5,7 @@ export const action = style({
   "@media": {
     "screen and (max-width: 768px)": {
       padding: "0",
-      margin: "16px 0",
+      // margin: "5px 0",
       display: "flex",
       justifyContent: "center",
     },

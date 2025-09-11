@@ -61,7 +61,8 @@ export const gameActions = style({
   "@media": {
     "screen and (max-width: 768px)": {
       padding: "0 8px",
-      gap: "16px",
+      gap: "24px",
+      marginBottom: "16px",
     },
   },
 });
@@ -72,6 +73,7 @@ export const gameActionsBox = style({
   "@media": {
     "screen and (max-width: 768px)": {
       flexDirection: "column",
+      gap: "10px",
     },
   },
 });
