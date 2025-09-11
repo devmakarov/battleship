@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useAudioStore } from "../stores/useAudioStore.ts";
 
 export enum EAudio {
   Miss = "Miss",
@@ -8,7 +9,9 @@ export enum EAudio {
   GameStarted = "GameStarted",
 }
 
-const useAudio = () => {
+export function useAudio() {
+  const { isMuted } = useAudioStore();
+
   const audio = useRef({
     [EAudio.Miss]: new Audio("/audio/shot.mp3"),
     [EAudio.Hit]: new Audio("/audio/hit.mp3"),
@@ -18,13 +21,12 @@ const useAudio = () => {
   });
 
   const playAudio = (key: EAudio) => {
-    const a = audio.current[key];
-    a.currentTime = 0;
-    a.volume = 0.3;
-    a.play().catch((e) => console.log("Audio play error:", e));
+    const currentAudio = audio.current[key];
+    currentAudio.muted = isMuted;
+    currentAudio.currentTime = 0;
+    currentAudio.volume = 0.3;
+    currentAudio.play().catch((e) => console.log("Audio play error:", e));
   };
 
   return { playAudio };
-};
-
-export default useAudio;
+}

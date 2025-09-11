@@ -54,6 +54,7 @@ export const game = style({
 export const gameActions = style({
   marginTop: "30px",
   display: "flex",
+  alignItems: "center",
   gap: "30px",
   padding: "0 36px",
 
@@ -61,6 +62,16 @@ export const gameActions = style({
     "screen and (max-width: 768px)": {
       padding: "0 8px",
       gap: "16px",
+    },
+  },
+});
+
+export const gameActionsBox = style({
+  display: "flex",
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      flexDirection: "column",
     },
   },
 });
@@ -120,5 +131,8 @@ export const boardChooseTheOpponent = style({
   textTransform: "uppercase",
   fontStyle: "italic",
   textAlign: "center",
-  // fontWeight: "bold",
+});
+
+export const toggleSound = style({
+  marginLeft: "auto",
 });

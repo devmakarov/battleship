@@ -1,8 +1,7 @@
 import { style } from "@vanilla-extract/css";
+import { vars } from "../../theme.css.ts";
 
 export const action = style({
-  marginTop: "16px",
-
   "@media": {
     "screen and (max-width: 768px)": {
       padding: "0",
@@ -15,10 +14,10 @@ export const action = style({
 
 export const actionButton = style({
   border: "none",
-  color: "#2a6dcd",
+  color: vars.color.shipBorder,
   backgroundColor: "transparent",
   fontSize: "12px",
-  borderBottom: `1px solid #2a6dcd`,
+  borderBottom: `1px solid ${vars.color.shipBorder}`,
   padding: "2px 8px",
   textTransform: "uppercase",
   cursor: "pointer",

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import useAudio, { EAudio } from "../../../hooks/useAudio";
+import { EAudio, useAudio } from "../../../hooks/useAudio";
 import { useSocket } from "../../../hooks/useSocket/useSocket.ts";
 import { EModalType } from "../../Modal/enums.ts";
 import { ECellValue } from "../../Board/enums.ts";

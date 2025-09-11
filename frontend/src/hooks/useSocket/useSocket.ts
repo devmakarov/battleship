@@ -51,6 +51,10 @@ export function useSocket() {
     const s = getSocket();
     setSocket(s);
 
+    const handleConnect = () => {
+      console.log("Connected to socket:", s.id);
+    };
+
     const handleInitialize = (data: EventGameInitialize) => {
       onInitializeRef.current?.(data);
     };
@@ -65,17 +69,24 @@ export function useSocket() {
       onOpponentLeftRef.current?.(data);
     };
 
-    s.on(GameEvent.Connect, () => console.log("Connected to socket:", s.id));
+    const handleDisconnect = () => {
+      console.log("Disconnected from socket:", s.id);
+    };
+
+    s.on(GameEvent.Connect, handleConnect);
     s.on(GameEvent.Initialize, handleInitialize);
     s.on(GameEvent.NextMove, handleNextMove);
     s.on(GameEvent.Finished, handleFinished);
     s.on(GameEvent.OpponentLeft, handleOpponentLeft);
+    s.on(GameEvent.Disconnect, handleDisconnect);
 
     return () => {
+      s.off(GameEvent.Connect, handleConnect);
       s.off(GameEvent.Initialize, handleInitialize);
       s.off(GameEvent.NextMove, handleNextMove);
       s.off(GameEvent.Finished, handleFinished);
       s.off(GameEvent.OpponentLeft, handleOpponentLeft);
+      s.off(GameEvent.Disconnect, handleDisconnect);
     };
   }, []);
 

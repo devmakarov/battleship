@@ -61,7 +61,7 @@ export const green = style({
 
 export const modal = style({
   background: "#d6d6f71",
-  border: `2px solid #2a6dcd`,
+  border: `2px solid ${vars.color.shipBorder}`,
   margin: "16px auto 0",
   fontSize: "14px",
 

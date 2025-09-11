@@ -19,27 +19,8 @@ export const vars = createGlobalTheme(":root", {
     shipDragging: "#6fc219",
     shipDraggingBackgroundColor: "#6fc21966",
 
-    missed: "#8a8a8a42",
+    missed: "#b1adad42",
     shot: "#ffa9a4",
     pointlessToShot: "#96a1a612",
   },
 });
-
-/*
-  1. fix colors +
-  2. add sound when I move a ship
-  3. create a game with a specific link +
-  4. upload to the github
-  5. current online
-  6. fix mobile version +
-  7. add reset position +
-  8. add rules
-  9. refactor Game.tsx +
-
-
-  - click
-  - text
-  - text 2
-  - rematch
-  - reset state
-*/

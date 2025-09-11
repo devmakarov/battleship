@@ -25,4 +25,5 @@ export enum GameEvent {
   NextMove = "game.nextMove",
   Finished = "game.finished",
   OpponentLeft = "game.opponentLeft",
+  Disconnect = "disconnect",
 }

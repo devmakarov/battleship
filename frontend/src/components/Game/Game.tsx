@@ -13,6 +13,7 @@ import { useGameState } from "./hooks/useGameState.ts";
 import { useGameSocketEvents } from "./hooks/useGameSocketEvents.ts";
 import { useGameAPI } from "./hooks/useGameAPI.ts";
 import { EInTheQueue } from "./types.ts";
+import SoundToggler from "../SoundToggler/SoundToggler.tsx";
 
 const Game = () => {
   const game = useGameState();
@@ -153,25 +154,31 @@ const Game = () => {
           </div>
 
           <div className={styles.gameActions}>
-            <Action
-              text="Random position"
-              isDisabled={
-                game.isRandomizeDisabled ||
-                game.isPlaying ||
-                game.isInTheQueue !== EInTheQueue.Unset
-              }
-              onClick={game.generateRandomPosition}
-            />
+            <div className={styles.gameActionsBox}>
+              <Action
+                text="Random position"
+                isDisabled={
+                  game.isRandomizeDisabled ||
+                  game.isPlaying ||
+                  game.isInTheQueue !== EInTheQueue.Unset
+                }
+                onClick={game.generateRandomPosition}
+              />
 
-            <Action
-              text="Reset position"
-              isDisabled={
-                game.isRandomizeDisabled ||
-                game.isPlaying ||
-                game.isInTheQueue !== EInTheQueue.Unset
-              }
-              onClick={game.resetPosition}
-            />
+              <Action
+                text="Reset position"
+                isDisabled={
+                  game.isRandomizeDisabled ||
+                  game.isPlaying ||
+                  game.isInTheQueue !== EInTheQueue.Unset
+                }
+                onClick={game.resetPosition}
+              />
+            </div>
+
+            <div className={styles.toggleSound}>
+              <SoundToggler />
+            </div>
           </div>
         </div>
 
