@@ -76,6 +76,7 @@ export const useBoardState = (
   const reset = () => {
     setRoots({});
     setState(getDefaultGrid());
+    setDestroyed([...defaultDestroyed]);
   };
 
   const resetPrevMove = () => {
