@@ -108,3 +108,27 @@ export const prevShot = style({
 export const cellShot = style({
   backgroundColor: vars.color.shot,
 });
+
+export const destroyed = style({
+  maxWidth: "400px",
+  width: "100%",
+  paddingLeft: "36px",
+  margin: "0 auto 8px",
+  visibility: "visible",
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      paddingLeft: 0,
+    },
+  },
+});
+
+export const destroyedHidden = style({
+  visibility: "hidden",
+});
+
+export const destroyedContainer = style({
+  display: "flex",
+  justifyContent: "space-between",
+  flexDirection: "row-reverse",
+});

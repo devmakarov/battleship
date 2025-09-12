@@ -64,6 +64,7 @@ const Game = () => {
                   ships={game.ships}
                   setShips={game.setShips}
                   prevMove={game.myself.prevMove}
+                  destroyed={game.myself.destroyed}
                 />
               </div>
               <p className={styles.playerBoxTitle}>Your grid</p>
@@ -91,6 +92,7 @@ const Game = () => {
                     gameId={game.gameId}
                     playerId={game.playerId}
                     prevMove={game.opponent.prevMove}
+                    destroyed={game.opponent.destroyed}
                   />
 
                   {!game.isPlaying && (

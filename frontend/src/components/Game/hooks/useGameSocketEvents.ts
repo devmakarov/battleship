@@ -5,6 +5,7 @@ import { EModalType } from "../../Modal/enums.ts";
 import { ECellValue } from "../../Board/enums.ts";
 import { EInTheQueue } from "../types.ts";
 import type { UseGameStateReturn } from "./useGameState.ts";
+import type { Destroyed } from "../../Board/hooks/useBoardState.ts";
 
 export function useGameSocketEvents({
   isStarted,
@@ -48,6 +49,7 @@ export function useGameSocketEvents({
     });
 
     setOnNextMove((data) => {
+      console.log(data.state);
       const player = data.prevTurn === playerId ? opponent : myself;
       const copy = player.state.map((row) => [...row]);
 
@@ -67,9 +69,12 @@ export function useGameSocketEvents({
 
       setTurn(playerId === data.turn);
 
+      const state = JSON.parse(data.state);
+      console.log("state", [...state.destroyed]);
+      player.setDestroyed([...state.destroyed] as Destroyed);
+
       if (data.prevTurn === playerId) {
-        const newRoots = JSON.parse(data.state);
-        setOpponentRoots(newRoots.roots);
+        setOpponentRoots(state.roots);
       }
     });
 

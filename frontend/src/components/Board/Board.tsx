@@ -9,7 +9,8 @@ import ShipBlockShot from "../Ship/ShipBlockShot.tsx";
 import { useCellSize } from "./hooks/useCellSize.ts";
 import type { ShipDataTransfer } from "../Ship/types.ts";
 import { EInTheQueue } from "../Game/types.ts";
-import { defaultPrevMove } from "./hooks/useBoardState.ts";
+import { defaultDestroyed, defaultPrevMove } from "./hooks/useBoardState.ts";
+import Destroyed from "../Destroyed/Destroyed.tsx";
 
 const CAPITALIZE_LETTER_A_INDEX = 65;
 
@@ -37,7 +38,9 @@ export const Board = ({
   gameId = "",
   playerId = "",
   prevMove = defaultPrevMove,
+  destroyed = defaultDestroyed,
 }: BoardProps) => {
+  console.log("destroyed", destroyed, mode);
   const boardRef = useRef<HTMLDivElement>(null);
   const size = useCellSize(boardRef, 10);
 
@@ -170,6 +173,21 @@ export const Board = ({
             : ""
         }`}
     >
+      <div
+        className={`${styles.destroyed} ${!isPlaying ? styles.destroyedHidden : ""}`}
+      >
+        <div className={styles.destroyedContainer}>
+          {destroyed!.map((count, index) => (
+            <Destroyed
+              size={index + 1}
+              count={count}
+              capacity={4 - index}
+              gap={index + 1 === 1 ? 2 : 10}
+            />
+          ))}
+        </div>
+      </div>
+
       <div className={styles.boardHead}>
         <div className={styles.title}></div>
         {state.map((_, rowIndex) => (

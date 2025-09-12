@@ -5,6 +5,8 @@ import { ECellValue } from "../enums.ts";
 
 export type Cell = string;
 
+export type Destroyed = [number, number, number, number];
+
 export interface BoardPrevMove {
   row: number;
   col: number;
@@ -19,6 +21,8 @@ export interface UseBoardStateReturn {
   prevMove: BoardPrevMove;
   setPrevMove: React.Dispatch<React.SetStateAction<BoardPrevMove>>;
   resetPrevMove: () => void;
+  destroyed: Destroyed;
+  setDestroyed: React.Dispatch<React.SetStateAction<Destroyed>>;
 }
 
 function makeCell(r: number, c: number): Cell {
@@ -39,6 +43,7 @@ interface useBoardStateParams {
 }
 
 export const defaultPrevMove: BoardPrevMove = { row: -1, col: -1 };
+export const defaultDestroyed: Destroyed = [0, 0, 0, 0];
 
 export const useBoardState = (
   { grid, defaultRoots }: useBoardStateParams = {
@@ -49,6 +54,7 @@ export const useBoardState = (
   const [, setParent] = useState<Record<Cell, Cell>>({});
   const [roots, setRoots] = useState<Record<Cell, ShipInfo>>({});
   const [prevMove, setPrevMove] = useState(defaultPrevMove);
+  const [destroyed, setDestroyed] = useState<Destroyed>(defaultDestroyed);
 
   function find(x: Cell, parentMap: Record<Cell, Cell>): Cell {
     let p = parentMap[x] ?? x;
@@ -175,5 +181,7 @@ export const useBoardState = (
     prevMove,
     setPrevMove,
     resetPrevMove,
+    destroyed,
+    setDestroyed,
   };
 };

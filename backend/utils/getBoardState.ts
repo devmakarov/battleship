@@ -101,6 +101,7 @@ export function getBoardState(state: number[][]) {
     });
 
     const roots: Record<Cell, ShipInfo> = {};
+    const destroyed = [0, 0, 0, 0];
 
     Object.entries(shipCellsMap).forEach(([root, cells]) => {
             const cellsMap: Record<string, number> = {};
@@ -128,11 +129,13 @@ export function getBoardState(state: number[][]) {
 
             if (isDestroyed) {
                  roots[root] = { id: generateId(), size, placement, cellsMap, isDestroyed, neighbours: getNeighbours(coords, state.length) };
+                 destroyed[size - 1] += 1;
             }
     });
 
     return {
-        roots
+        roots,
+        destroyed
     }
 }
 

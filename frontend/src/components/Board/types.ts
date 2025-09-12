@@ -1,7 +1,7 @@
 import type { ShipInfo } from "../Setup/types.ts";
 import { Mode } from "./enums.ts";
 import type { EInTheQueue } from "../Game/types.ts";
-import type { BoardPrevMove } from "./hooks/useBoardState.ts";
+import type { BoardPrevMove, Destroyed } from "./hooks/useBoardState.ts";
 
 export interface BoardProps {
   state: number[][];
@@ -9,6 +9,7 @@ export interface BoardProps {
   roots: Record<string, ShipInfo>;
   mode: Mode;
   turn: boolean;
+  destroyed?: Destroyed;
   ships?: Set<string>;
   isPlaying?: boolean;
   isInTheQueue?: EInTheQueue;

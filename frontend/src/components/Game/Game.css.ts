@@ -62,7 +62,7 @@ export const gameActions = style({
     "screen and (max-width: 768px)": {
       padding: "0 8px",
       gap: "24px",
-      marginBottom: "16px",
+      marginBottom: "24px",
     },
   },
 });
