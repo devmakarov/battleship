@@ -19,6 +19,10 @@ export type EventGameOpponentLeft = {
   leftPlayer: string;
 };
 
+export type EventGameOnlineUpdate = {
+  count: number;
+};
+
 export enum GameEvent {
   Connect = "connect",
   Initialize = "game.initialize",
@@ -26,4 +30,5 @@ export enum GameEvent {
   Finished = "game.finished",
   OpponentLeft = "game.opponentLeft",
   Disconnect = "disconnect",
+  OnlineUpdate = "online.count",
 }

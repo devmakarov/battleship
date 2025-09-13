@@ -6,6 +6,7 @@ import { ECellValue } from "../../Board/enums.ts";
 import { EInTheQueue } from "../types.ts";
 import type { UseGameStateReturn } from "./useGameState.ts";
 import type { Destroyed } from "../../Board/hooks/useBoardState.ts";
+import { useOnlineStore } from "../../../stores/useOnlineStore.ts";
 
 export function useGameSocketEvents({
   isStarted,
@@ -28,8 +29,10 @@ export function useGameSocketEvents({
     setOnNextMove,
     setOnFinished,
     setOnOpponentLeft,
+    setOnOnlineUpdate,
   } = useSocket();
   const { playAudio } = useAudio();
+  const { setCount } = useOnlineStore();
 
   useEffect(() => {
     if (!playerId) {
@@ -70,7 +73,7 @@ export function useGameSocketEvents({
       setTurn(playerId === data.turn);
 
       const state = JSON.parse(data.state);
-      console.log("state", [...state.destroyed]);
+
       player.setDestroyed([...state.destroyed] as Destroyed);
 
       if (data.prevTurn === playerId) {
@@ -92,6 +95,12 @@ export function useGameSocketEvents({
       setModalType(EModalType.GameIsTerminated);
     });
   }, [playerId, myself, opponent]);
+
+  useEffect(() => {
+    setOnOnlineUpdate((data) => {
+      setCount(data.count);
+    });
+  }, []);
 
   useEffect(() => {
     if (isStarted && playerId && socket) {

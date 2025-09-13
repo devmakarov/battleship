@@ -4,6 +4,10 @@ import redis from "../../services/redisClient";
 export default function makeDisconnectHandler(io: Socket["server"]) {
     return async function handleDisconnect(socket: Socket) {
         try {
+            await redis.srem("online:sockets", socket.id);
+            const count = await redis.scard("online:sockets");
+            io.emit("online.count", { count });
+
             const playerId = await redis.get(`socket:${socket.id}:player`);
             if (!playerId) return;
 

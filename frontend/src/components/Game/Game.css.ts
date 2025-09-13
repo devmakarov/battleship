@@ -112,6 +112,21 @@ export const title = style({
   position: "absolute",
   top: "-45px",
   left: "15px",
+  right: "15px",
+  width: "calc(100% - 30px)",
+});
+
+export const titleBox = style({
+  display: "flex",
+  alignItems: "center",
+});
+
+export const online = style({
+  fontSize: "11px",
+  fontStyle: "initial",
+  display: "inline-block",
+  marginLeft: "auto",
+  color: vars.color.gray,
 });
 
 export const boardPreview = style({

@@ -14,8 +14,9 @@ export default function Destroyed({
     (index: number) => {
       return (
         <>
-          {new Array(size).fill(0).map(() => (
+          {new Array(size).fill(0).map((_, i) => (
             <div
+              key={`${size}-${i}`}
               className={`${styles.block} ${index + 1 <= count ? styles.destroyed : ""}`}
             ></div>
           ))}
@@ -28,7 +29,9 @@ export default function Destroyed({
   return (
     <div className={styles.parent} style={{ gap }}>
       {ships.map((_, index) => (
-        <div className={styles.ship}>{ship(index)}</div>
+        <div className={styles.ship} key={index}>
+          {ship(index)}
+        </div>
       ))}
     </div>
   );

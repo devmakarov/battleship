@@ -6,6 +6,7 @@ import {
   type EventGameFinished,
   type EventGameInitialize,
   type EventGameNextMove,
+  type EventGameOnlineUpdate,
   type EventGameOpponentLeft,
   GameEvent,
 } from "./types.ts";
@@ -26,6 +27,10 @@ export function useSocket() {
     ((data: EventGameOpponentLeft) => void) | null
   >(null);
 
+  const onOnlineUpdate = useRef<((data: EventGameOnlineUpdate) => void) | null>(
+    null,
+  );
+
   const setOnInitialize = (
     callback: ((data: EventGameInitialize) => void) | null,
   ) => {
@@ -45,6 +50,11 @@ export function useSocket() {
     callback: ((data: EventGameOpponentLeft) => void) | null,
   ) => {
     onOpponentLeftRef.current = callback;
+  };
+  const setOnOnlineUpdate = (
+    callback: ((data: EventGameOnlineUpdate) => void) | null,
+  ) => {
+    onOnlineUpdate.current = callback;
   };
 
   useEffect(() => {
@@ -73,12 +83,17 @@ export function useSocket() {
       console.log("Disconnected from socket:", s.id);
     };
 
+    const handleOnlineUpdate = (data: EventGameOnlineUpdate) => {
+      onOnlineUpdate.current?.(data);
+    };
+
     s.on(GameEvent.Connect, handleConnect);
     s.on(GameEvent.Initialize, handleInitialize);
     s.on(GameEvent.NextMove, handleNextMove);
     s.on(GameEvent.Finished, handleFinished);
     s.on(GameEvent.OpponentLeft, handleOpponentLeft);
     s.on(GameEvent.Disconnect, handleDisconnect);
+    s.on(GameEvent.OnlineUpdate, handleOnlineUpdate);
 
     return () => {
       s.off(GameEvent.Connect, handleConnect);
@@ -87,6 +102,7 @@ export function useSocket() {
       s.off(GameEvent.Finished, handleFinished);
       s.off(GameEvent.OpponentLeft, handleOpponentLeft);
       s.off(GameEvent.Disconnect, handleDisconnect);
+      s.off(GameEvent.OnlineUpdate, handleOnlineUpdate);
     };
   }, []);
 
@@ -96,5 +112,6 @@ export function useSocket() {
     setOnNextMove,
     setOnFinished,
     setOnOpponentLeft,
+    setOnOnlineUpdate,
   };
 }

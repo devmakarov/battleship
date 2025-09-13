@@ -40,7 +40,6 @@ export const Board = ({
   prevMove = defaultPrevMove,
   destroyed = defaultDestroyed,
 }: BoardProps) => {
-  console.log("destroyed", destroyed, mode);
   const boardRef = useRef<HTMLDivElement>(null);
   const size = useCellSize(boardRef, 10);
 
@@ -179,6 +178,7 @@ export const Board = ({
         <div className={styles.destroyedContainer}>
           {destroyed!.map((count, index) => (
             <Destroyed
+              key={`${mode}-${index}`}
               size={index + 1}
               count={count}
               capacity={4 - index}

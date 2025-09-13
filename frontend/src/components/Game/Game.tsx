@@ -14,10 +14,12 @@ import { useGameSocketEvents } from "./hooks/useGameSocketEvents.ts";
 import { useGameAPI } from "./hooks/useGameAPI.ts";
 import { EInTheQueue } from "./types.ts";
 import SoundToggler from "../SoundToggler/SoundToggler.tsx";
+import { useOnlineStore } from "../../stores/useOnlineStore.ts";
 
 const Game = () => {
   const game = useGameState();
   const { socket } = useGameSocketEvents(game);
+  const { count } = useOnlineStore();
 
   const {
     handleCreateGame,
@@ -47,7 +49,10 @@ const Game = () => {
       <div className={styles.app}>
         <div className={styles.view}>
           <div className={styles.title}>
-            <h2>Battleship</h2>
+            <h2 className={styles.titleBox}>
+              Battleship
+              <span className={styles.online}>{count} players online</span>
+            </h2>
           </div>
 
           <div className={styles.game}>
