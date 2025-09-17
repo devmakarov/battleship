@@ -14,12 +14,11 @@ import { useGameSocketEvents } from "./hooks/useGameSocketEvents.ts";
 import { useGameAPI } from "./hooks/useGameAPI.ts";
 import { EInTheQueue } from "./types.ts";
 import SoundToggler from "../SoundToggler/SoundToggler.tsx";
-import { useOnlineStore } from "../../stores/useOnlineStore.ts";
+import GameHeader from "./GameHeader.tsx";
 
 const Game = () => {
   const game = useGameState();
   const { socket } = useGameSocketEvents(game);
-  const { count } = useOnlineStore();
 
   const {
     handleCreateGame,
@@ -48,17 +47,13 @@ const Game = () => {
     <main className={appStyles.container}>
       <div className={styles.app}>
         <div className={styles.view}>
-          <div className={styles.title}>
-            <h2 className={styles.titleBox}>
-              Battleship
-              <span className={styles.online}>{count} players online</span>
-            </h2>
-          </div>
+          <GameHeader />
 
           <div className={styles.game}>
             <div className={styles.playerBox}>
               <div className={styles.boardWrapper}>
                 <Board
+                  gameNumber={game.gameNumber}
                   state={game.myself.state}
                   setState={game.myself.setState}
                   roots={game.myself.roots}
@@ -85,6 +80,7 @@ const Game = () => {
               <div className={styles.playerBox}>
                 <div className={styles.boardWrapper}>
                   <Board
+                    gameNumber={game.gameNumber}
                     state={game.opponent.state}
                     setState={game.opponent.setState}
                     roots={game.opponent.roots}

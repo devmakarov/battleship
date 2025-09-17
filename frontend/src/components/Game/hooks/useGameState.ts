@@ -11,6 +11,8 @@ import { EInTheQueue } from "../types.ts";
 import { EModalType } from "../../Modal/enums.ts";
 
 export interface UseGameStateReturn {
+  gameNumber: number;
+
   view: EAppViews;
   setView: Dispatch<SetStateAction<EAppViews>>;
 
@@ -35,7 +37,6 @@ export interface UseGameStateReturn {
   gameId: string;
   setGameId: Dispatch<SetStateAction<string>>;
 
-  opponentRoots: Record<Cell, ShipInfo>;
   setOpponentRoots: Dispatch<SetStateAction<Record<Cell, ShipInfo>>>;
 
   myself: UseBoardStateReturn;
@@ -67,6 +68,7 @@ export interface UseGameStateReturn {
 }
 
 export function useGameState(): UseGameStateReturn {
+  const [gameNumber, setGameCount] = useState(1);
   const [view, setView] = useState(EAppViews.Setup);
   const [isStarted, setIsStarted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -80,16 +82,17 @@ export function useGameState(): UseGameStateReturn {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<EModalType>();
   const [isFriendGame, setIsFriendGame] = useState<boolean>(false);
-  const [opponentRoots, setOpponentRoots] = useState<Record<Cell, ShipInfo>>(
-    {},
-  );
+  // const [opponentRoots, setOpponentRoots] = useState<Record<Cell, ShipInfo>>(
+  //   {},
+  // );
   const [hasGeneratedRandomPosition, setHasGeneratedRandomPosition] =
     useState(false);
 
   const myself = useBoardState({ grid: getDefaultPosition() });
   const opponent = useBoardState({
     grid: getDefaultPosition(),
-    defaultRoots: opponentRoots,
+    hasExternalRoots: true,
+    // defaultRoots: opponentRoots,
   });
 
   const isRandomizeDisabled = useMemo(
@@ -118,14 +121,18 @@ export function useGameState(): UseGameStateReturn {
   };
 
   const finish = () => {
+    setGameCount(gameNumber + 1);
     setIsPlaying(false);
     setIsStarted(false);
     setTurn(false);
-    setOpponentRoots({});
     myself.setState(savedState);
     myself.resetPrevMove();
-    opponent.reset();
+    myself.resetDestroyed();
+
+    opponent.resetState();
     opponent.resetPrevMove();
+    opponent.resetDestroyed();
+    opponent.setExternalRoots({});
     setHasPlayed(true);
   };
 
@@ -151,8 +158,7 @@ export function useGameState(): UseGameStateReturn {
     setPlayerId,
     gameId,
     setGameId,
-    opponentRoots,
-    setOpponentRoots,
+    setOpponentRoots: opponent.setExternalRoots,
     myself,
     opponent,
     isRandomizeDisabled,
@@ -172,5 +178,6 @@ export function useGameState(): UseGameStateReturn {
     closeModal,
     isFriendGame,
     setIsFriendGame,
+    gameNumber,
   };
 }

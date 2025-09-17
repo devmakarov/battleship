@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Socket } from "socket.io-client";
 import { getSocket } from "./socket.ts";
 
@@ -12,7 +12,7 @@ import {
 } from "./types.ts";
 
 export function useSocket() {
-  const [socket, setSocket] = useState<Socket | null>(null);
+  const socket = useRef<Socket | null>(null);
 
   const onInitializeRef = useRef<((data: EventGameInitialize) => void) | null>(
     null,
@@ -59,7 +59,7 @@ export function useSocket() {
 
   useEffect(() => {
     const s = getSocket();
-    setSocket(s);
+    socket.current = s;
 
     const handleConnect = () => {
       console.log("Connected to socket:", s.id);
@@ -107,7 +107,7 @@ export function useSocket() {
   }, []);
 
   return {
-    socket,
+    socket: socket.current,
     setOnInitialize,
     setOnNextMove,
     setOnFinished,

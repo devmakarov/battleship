@@ -1,5 +1,5 @@
 import * as React from "react";
-import { type DragEvent, useMemo, useState } from "react";
+import { type DragEvent, memo, useMemo, useState } from "react";
 import * as styles from "./Ship.css.ts";
 
 import { useIsMobile } from "../../hooks/useIsMobile.ts";
@@ -152,4 +152,4 @@ const Ship = (props: ShipProps) => {
   );
 };
 
-export default Ship;
+export default memo(Ship);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { ShipInfo } from "../../Setup/types.ts";
 import { v4 as generateId } from "uuid";
 import { ECellValue } from "../enums.ts";
@@ -16,11 +16,15 @@ export interface UseBoardStateReturn {
   state: number[][];
   setState: React.Dispatch<React.SetStateAction<number[][]>>;
   roots: Record<Cell, ShipInfo>;
-  setRoots: React.Dispatch<React.SetStateAction<Record<Cell, ShipInfo>>>;
-  reset: () => void;
+  externalRoots: Record<Cell, ShipInfo>;
+  setExternalRoots: React.Dispatch<
+    React.SetStateAction<Record<Cell, ShipInfo>>
+  >;
+  resetState: () => void;
   prevMove: BoardPrevMove;
   setPrevMove: React.Dispatch<React.SetStateAction<BoardPrevMove>>;
   resetPrevMove: () => void;
+  resetDestroyed: () => void;
   destroyed: Destroyed;
   setDestroyed: React.Dispatch<React.SetStateAction<Destroyed>>;
 }
@@ -39,43 +43,49 @@ const getDefaultGrid = () => {
 
 interface useBoardStateParams {
   grid: number[][];
-  defaultRoots?: Record<Cell, ShipInfo>;
+  hasExternalRoots?: boolean;
 }
 
 export const defaultPrevMove: BoardPrevMove = { row: -1, col: -1 };
 export const defaultDestroyed: Destroyed = [0, 0, 0, 0];
 
 export const useBoardState = (
-  { grid, defaultRoots }: useBoardStateParams = {
+  { grid, hasExternalRoots = false }: useBoardStateParams = {
     grid: getDefaultGrid(),
   },
 ): UseBoardStateReturn => {
+  const [externalRoots, setExternalRoots] = useState<Record<Cell, ShipInfo>>(
+    {},
+  );
   const [state, setState] = useState(grid);
-  const [, setParent] = useState<Record<Cell, Cell>>({});
-  const [roots, setRoots] = useState<Record<Cell, ShipInfo>>({});
   const [prevMove, setPrevMove] = useState(defaultPrevMove);
-  const [destroyed, setDestroyed] = useState<Destroyed>(defaultDestroyed);
+  const [destroyed, setDestroyed] = useState<Destroyed>([...defaultDestroyed]);
 
-  function find(x: Cell, parentMap: Record<Cell, Cell>): Cell {
+  const find = useCallback((x: Cell, parentMap: Record<Cell, Cell>): Cell => {
     let p = parentMap[x] ?? x;
     if (p !== x) {
       p = find(p, parentMap);
       parentMap[x] = p;
     }
     return p;
-  }
+  }, []);
 
-  function union(a: Cell, b: Cell, parentMap: Record<Cell, Cell>) {
-    const rootA = find(a, parentMap);
-    const rootB = find(b, parentMap);
-    if (rootA !== rootB) {
-      parentMap[rootB] = rootA;
-    }
-  }
+  const union = useCallback(
+    (a: Cell, b: Cell, parentMap: Record<Cell, Cell>) => {
+      const rootA = find(a, parentMap);
+      const rootB = find(b, parentMap);
+      if (rootA !== rootB) {
+        parentMap[rootB] = rootA;
+      }
+    },
+    [find],
+  );
 
-  const reset = () => {
-    setRoots({});
+  const resetState = () => {
     setState(getDefaultGrid());
+  };
+
+  const resetDestroyed = () => {
     setDestroyed([...defaultDestroyed]);
   };
 
@@ -83,49 +93,49 @@ export const useBoardState = (
     setPrevMove(defaultPrevMove);
   };
 
-  useEffect(() => {
-    const newParent: Record<Cell, Cell> = {};
+  const computeRoots = useCallback(
+    (state: number[][]): Record<Cell, ShipInfo> => {
+      const newParent: Record<Cell, Cell> = {};
 
-    state.forEach((row, r) => {
-      row.forEach((val, c) => {
-        if (val === ECellValue.Live || val === ECellValue.Shot) {
-          const cell = makeCell(r, c);
-          newParent[cell] = cell;
-        }
-      });
-    });
-
-    state.forEach((row, r) => {
-      row.forEach((val, c) => {
-        if (val === ECellValue.Live || val === ECellValue.Shot) {
-          const cell = makeCell(r, c);
-
-          if (
-            c + 1 < row.length &&
-            (row[c + 1] === ECellValue.Live || row[c + 1] === ECellValue.Shot)
-          ) {
-            union(cell, makeCell(r, c + 1), newParent);
+      state.forEach((row, r) => {
+        row.forEach((val, c) => {
+          if (val === ECellValue.Live || val === ECellValue.Shot) {
+            const cell = makeCell(r, c);
+            newParent[cell] = cell;
           }
-
-          if (
-            r + 1 < state.length &&
-            (state[r + 1][c] === ECellValue.Live ||
-              state[r + 1][c] === ECellValue.Shot)
-          ) {
-            union(cell, makeCell(r + 1, c), newParent);
-          }
-        }
+        });
       });
-    });
 
-    const shipCellsMap: Record<Cell, Cell[]> = {};
-    Object.keys(newParent).forEach((cell) => {
-      const root = find(cell, newParent);
-      if (!shipCellsMap[root]) shipCellsMap[root] = [];
-      shipCellsMap[root].push(cell);
-    });
+      state.forEach((row, r) => {
+        row.forEach((val, c) => {
+          if (val === ECellValue.Live || val === ECellValue.Shot) {
+            const cell = makeCell(r, c);
 
-    if (defaultRoots === undefined) {
+            if (
+              c + 1 < row.length &&
+              (row[c + 1] === ECellValue.Live || row[c + 1] === ECellValue.Shot)
+            ) {
+              union(cell, makeCell(r, c + 1), newParent);
+            }
+
+            if (
+              r + 1 < state.length &&
+              (state[r + 1][c] === ECellValue.Live ||
+                state[r + 1][c] === ECellValue.Shot)
+            ) {
+              union(cell, makeCell(r + 1, c), newParent);
+            }
+          }
+        });
+      });
+
+      const shipCellsMap: Record<Cell, Cell[]> = {};
+      Object.keys(newParent).forEach((cell) => {
+        const root = find(cell, newParent);
+        if (!shipCellsMap[root]) shipCellsMap[root] = [];
+        shipCellsMap[root].push(cell);
+      });
+
       const newRoots: Record<Cell, ShipInfo> = {};
       Object.entries(shipCellsMap).forEach(([root, cells]) => {
         const cellsMap: Record<string, number> = {};
@@ -161,28 +171,27 @@ export const useBoardState = (
         };
       });
 
-      setRoots(newRoots);
-    } else {
-      try {
-        setRoots(defaultRoots);
-      } catch (e) {
-        console.error(e);
-      }
-    }
+      return newRoots;
+    },
+    [find, union],
+  );
 
-    setParent(newParent);
-  }, [state, defaultRoots]);
+  const roots = useMemo(() => {
+    return hasExternalRoots ? externalRoots : computeRoots(state);
+  }, [hasExternalRoots, computeRoots, state, externalRoots]);
 
   return {
     state,
     setState,
     roots,
-    setRoots,
-    reset,
+    resetState,
     prevMove,
     setPrevMove,
     resetPrevMove,
     destroyed,
     setDestroyed,
+    externalRoots,
+    setExternalRoots,
+    resetDestroyed,
   };
 };

@@ -1,5 +1,6 @@
 import * as styles from "./ShipBlock.css.ts";
 import { ECellValue } from "../Board/enums.ts";
+import { memo } from "react";
 
 const ShipBlock = ({
   index,
@@ -20,13 +21,12 @@ const ShipBlock = ({
 
   const blockClass = `
     ${styles.shipBlock}
-    
     ${isDragging ? "dragging" : ""}
-    ${isShaking ? "shot" : ""}
+    ${isShaking ? "shaking" : ""}
     ${isShot ? "shot" : mode === "opponent" ? "" : "live"}
   `;
 
   return <div key={index} className={blockClass}></div>;
 };
 
-export default ShipBlock;
+export default memo(ShipBlock);

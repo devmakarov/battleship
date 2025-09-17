@@ -19,4 +19,5 @@ export interface BoardProps {
   gameId?: string;
   playerId?: string;
   prevMove?: BoardPrevMove;
+  gameNumber: number;
 }

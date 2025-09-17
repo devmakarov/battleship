@@ -22,7 +22,7 @@ const Setup = ({ onReady, state: parentState, ships }: PositionSetupProps) => {
         onReady(state);
       }, 1000);
     }
-  }, [isCompleted, onReady, state]);
+  }, [isCompleted, onReady, state, roots]);
 
   useEffect(() => {
     if (parentState.length) {

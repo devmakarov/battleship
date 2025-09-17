@@ -10,7 +10,6 @@ export const grid = style({
 
   borderLeft: `1px solid ${vars.color.secondary}`,
   borderTop: `1px solid ${vars.color.secondary}`,
-  // borderRadius: "4px",
 });
 
 export const cell = style({

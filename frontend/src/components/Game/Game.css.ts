@@ -69,11 +69,11 @@ export const gameActions = style({
 
 export const gameActionsBox = style({
   display: "flex",
+  gap: "10px",
 
   "@media": {
     "screen and (max-width: 768px)": {
       flexDirection: "column",
-      gap: "10px",
     },
   },
 });
