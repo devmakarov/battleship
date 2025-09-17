@@ -6,7 +6,6 @@ import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
 const useGameAPI = ({
-  socket,
   game,
 }: {
   game: UseGameStateReturn;
@@ -54,8 +53,6 @@ const useGameAPI = ({
     game.setPlayerId(playerId);
     game.setGameId(gameId);
     game.setIsStarted(true);
-
-    socket?.emit("register", { playerId: game.playerId });
   };
 
   const handleJoinGame = async () => {
